@@ -49,7 +49,7 @@ heroSlidesEl.innerHTML = heroSlides.map((slide, index) => {
     : `<div class="hero-media"><img src="${asset(slide.image)}" alt="${slide.title}" /></div>`;
   return `
   <article class="hero-slide${index === 0 ? ' active' : ''}" data-slide="${index}">
-    <div class="hero-copy"><p class="hero-kicker">${slide.kicker}</p><h1>${slide.title}</h1><p>${slide.copy}</p><a class="hero-cta" href="${slide.href}">SAIBA MAIS <span aria-hidden="true">↗</span></a></div>
+    <div class="hero-copy"><p class="hero-kicker">${slide.kicker}</p><h1>${slide.title}</h1><p>${slide.copy}</p><a class="hero-cta" href="${slide.href}">SAIBA MAIS</a></div>
     ${media}
   </article>`;
 }).join('');
@@ -85,7 +85,7 @@ if (portraitCard && !reduceMotion && window.matchMedia('(pointer: fine)').matche
 
 const heroPerson = document.querySelector('.hero-person');
 const aboutPerson = document.querySelector('.about-person');
-const sharedPortraitEnabled = heroPerson && aboutPerson && !reduceMotion && window.matchMedia('(min-width: 621px)').matches;
+const sharedPortraitEnabled = heroPerson && aboutPerson && !reduceMotion;
 if (sharedPortraitEnabled) {
   const transferPortrait = document.createElement('img');
   transferPortrait.className = 'portrait-transfer';
@@ -128,7 +128,7 @@ const contentWhatsAppLink = (title, text) => {
   return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 };
 activityTrack.innerHTML = activities.map(([image, title, text], index) => `
-  <a class="project-item reveal" href="${serviceWhatsAppLink(title, text)}" target="_blank" rel="noopener noreferrer" aria-label="Solicitar orçamento para ${title}" data-project-index="${index}"><div class="project-item-highlight" aria-hidden="true"></div><div class="project-item-content"><div class="project-item-title"><h3>${title}</h3><span class="project-item-arrow" aria-hidden="true">↗</span></div><p>${text}</p></div><img class="project-item-thumb" src="${asset(image)}" alt="" aria-hidden="true" loading="lazy" /><span class="project-item-year">${activityYears[index] || '2024'}</span></a>`).join('');
+  <a class="project-item reveal" href="${serviceWhatsAppLink(title, text)}" target="_blank" rel="noopener noreferrer" aria-label="Solicitar orçamento para ${title}" data-project-index="${index}"><div class="project-item-highlight" aria-hidden="true"></div><div class="project-item-content"><div class="project-item-title"><h3>${title}</h3></div><p>${text}</p></div><img class="project-item-thumb" src="${asset(image)}" alt="" aria-hidden="true" loading="lazy" /><span class="project-item-year">${activityYears[index] || '2024'}</span></a>`).join('');
 
 const growthGraphMarkup = `
   <div class="product-media growth-graph" role="img" aria-label="Gráfico animado de evolução patrimonial: uma linha ascendente rompe o novo patamar de crescimento">
@@ -150,9 +150,9 @@ const growthGraphMarkup = `
     <div class="growth-axis" aria-hidden="true"><span>HOJE</span><span>PROCESSO</span><span>NOVO PATAMAR</span></div>
   </div>`;
 productTrack.innerHTML = products.map(([image, title, text]) => `
-  <article class="product-card reveal">${image === 'growth-chart' ? growthGraphMarkup : `<div class="product-media"><img loading="lazy" src="${asset(image)}" alt="${title}" /></div>`}<div class="product-copy"><h3>${title}</h3><p>${text}</p><button class="text-link text-button" type="button" data-open-portal>CONFERIR <span aria-hidden="true">↗</span></button></div></article>`).join('');
+  <article class="product-card reveal">${image === 'growth-chart' ? growthGraphMarkup : `<div class="product-media"><img loading="lazy" src="${asset(image)}" alt="${title}" /></div>`}<div class="product-copy"><h3>${title}</h3><p>${text}</p><button class="text-link text-button" type="button" data-open-portal>CONFERIR</button></div></article>`).join('');
 
-contentGrid.innerHTML = content.map(([tone, tag, title, text, image]) => `<a class="content-card ${tone} reveal" href="${contentWhatsAppLink(title, text)}" target="_blank" rel="noopener noreferrer" aria-label="Conversar sobre ${title}"><div class="content-card-media"><img loading="lazy" src="${asset(image)}" alt="${title}" /></div><div class="content-card-body"><span class="content-tag">${tag}</span><strong>${title}</strong><p>${text}</p><span class="content-card-arrow" aria-hidden="true">↗</span></div></a>`).join('');
+contentGrid.innerHTML = content.map(([tone, tag, title, text, image]) => `<a class="content-card ${tone} reveal" href="${contentWhatsAppLink(title, text)}" target="_blank" rel="noopener noreferrer" aria-label="Conversar sobre ${title}"><div class="content-card-media"><img loading="lazy" src="${asset(image)}" alt="${title}" /></div><div class="content-card-body"><span class="content-tag">${tag}</span><strong>${title}</strong><p>${text}</p></div></a>`).join('');
 
 let heroIndex = 0;
 const updateHero = (nextIndex) => {
@@ -226,7 +226,7 @@ const searchOverlay = document.querySelector('#search-overlay');
 const searchInput = document.querySelector('#service-search');
 const searchResults = document.querySelector('#search-results');
 const searchItems = activities.map(([, title]) => title).concat(['Portal do cliente', 'Lembretes de prazo', 'Reforma tributária']);
-const renderSearch = (query = '') => { const normalized = query.toLocaleLowerCase('pt-BR'); const matches = searchItems.filter((item) => item.toLocaleLowerCase('pt-BR').includes(normalized)); searchResults.innerHTML = matches.length ? matches.map((item) => `<a class="search-result" href="#services"><span>${item}</span><span aria-hidden="true">↗</span></a>`).join('') : '<p>Nenhum resultado encontrado.</p>'; };
+const renderSearch = (query = '') => { const normalized = query.toLocaleLowerCase('pt-BR'); const matches = searchItems.filter((item) => item.toLocaleLowerCase('pt-BR').includes(normalized)); searchResults.innerHTML = matches.length ? matches.map((item) => `<a class="search-result" href="#services"><span>${item}</span></a>`).join('') : '<p>Nenhum resultado encontrado.</p>'; };
 renderSearch();
 document.querySelector('#search-open').addEventListener('click', () => { searchOverlay.hidden = false; searchInput.focus(); });
 searchInput.addEventListener('input', () => renderSearch(searchInput.value));
