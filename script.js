@@ -94,25 +94,54 @@ if (sharedPortraitEnabled) {
   transferPortrait.setAttribute('aria-hidden', 'true');
   document.body.appendChild(transferPortrait);
 
-  const startRect = heroPerson.getBoundingClientRect();
   const clamp01 = (value) => Math.max(0, Math.min(1, value));
+  let portraitFrame = null;
+  let portraitMetrics = null;
+  const measurePortrait = () => {
+    const targetRect = aboutPerson.getBoundingClientRect();
+    const currentScroll = window.scrollY;
+    const startRect = heroPerson.getBoundingClientRect();
+    portraitMetrics = {
+      startLeft: currentScroll < 1 ? startRect.left : portraitMetrics?.startLeft ?? startRect.left,
+      startTop: currentScroll < 1 ? startRect.top : portraitMetrics?.startTop ?? startRect.top,
+      startWidth: currentScroll < 1 ? startRect.width : portraitMetrics?.startWidth ?? startRect.width,
+      startHeight: currentScroll < 1 ? startRect.height : portraitMetrics?.startHeight ?? startRect.height,
+      aboutTop: targetRect.top + currentScroll,
+      aboutLeft: targetRect.left,
+      aboutWidth: targetRect.width,
+      aboutHeight: targetRect.height,
+    };
+  };
   const syncPortraitTransfer = () => {
-    const aboutTop = aboutFrame.getBoundingClientRect().top + window.scrollY;
+    if (!portraitMetrics) return;
+    const { startLeft, startTop, startWidth, startHeight, aboutTop, aboutLeft, aboutWidth, aboutHeight } = portraitMetrics;
     const endScroll = Math.max(1, aboutTop - window.innerHeight * .48);
     const progress = clamp01(window.scrollY / endScroll);
-    const targetRect = aboutPerson.getBoundingClientRect();
+    const targetTop = aboutTop - window.scrollY;
     const mix = (from, to) => from + (to - from) * progress;
-    transferPortrait.style.left = `${mix(startRect.left, targetRect.left)}px`;
-    transferPortrait.style.top = `${mix(startRect.top, targetRect.top)}px`;
-    transferPortrait.style.width = `${mix(startRect.width, targetRect.width)}px`;
-    transferPortrait.style.height = `${mix(startRect.height, targetRect.height)}px`;
+    transferPortrait.style.left = `${mix(startLeft, aboutLeft)}px`;
+    transferPortrait.style.top = `${mix(startTop, targetTop)}px`;
+    transferPortrait.style.width = `${mix(startWidth, aboutWidth)}px`;
+    transferPortrait.style.height = `${mix(startHeight, aboutHeight)}px`;
     transferPortrait.style.opacity = progress < 1 ? '1' : '0';
     heroPerson.style.opacity = '0';
     aboutPerson.style.opacity = progress >= 1 ? '1' : '0';
   };
-  window.addEventListener('scroll', syncPortraitTransfer, { passive: true });
-  window.addEventListener('resize', syncPortraitTransfer);
-  window.requestAnimationFrame(syncPortraitTransfer);
+  const schedulePortraitSync = () => {
+    if (portraitFrame !== null) return;
+    portraitFrame = window.requestAnimationFrame(() => {
+      portraitFrame = null;
+      syncPortraitTransfer();
+    });
+  };
+  const refreshPortraitMetrics = () => {
+    measurePortrait();
+    schedulePortraitSync();
+  };
+  measurePortrait();
+  window.addEventListener('scroll', schedulePortraitSync, { passive: true });
+  window.addEventListener('resize', refreshPortraitMetrics);
+  schedulePortraitSync();
 } else if (aboutPerson) {
   aboutPerson.style.opacity = '1';
 }
