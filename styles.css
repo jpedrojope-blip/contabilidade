@@ -83,6 +83,7 @@ main{padding-top:116px}
 .layered-portrait .about-person{opacity:0}
 .portrait-transfer{position:fixed;z-index:80;display:block;pointer-events:none;object-fit:cover;object-position:56% bottom;will-change:left,top,width,height,opacity;transform:none!important}
 @media(max-width:620px){.portrait-transfer{display:block}}
+@media(max-width:620px){.portrait-transfer{z-index:1}}
 @media(prefers-reduced-motion:reduce){.layered-portrait .about-person{opacity:1}.portrait-transfer{display:none}}
 
 /* Project showcase interaction adapted to the Barbalho solutions list. */
